@@ -3,3 +3,16 @@ version: '${project.version}'
 main: me.houserlab.shrineSpawn.ShrineSpawn
 api-version: '1.21'
 depend: [ Multiverse-Core ]
+
+commands:
+  shrine:
+    description: "General debugging and testing for ShrineSpawn. Need shrinespawn.admin permission."
+    usage: "/shrine <help|tp|set|remove|list>"
+    aliases: [ ShrineSpawn ]
+    permission: shrinespawn.admin
+    permission-message: "You do not have access to this command!"
+
+permissions:
+  shrinespawn.admin:
+    description: "Admin permission for ShrineSpawn plugin."
+    default: op
