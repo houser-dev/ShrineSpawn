@@ -2,31 +2,79 @@
 # Documentation: https://github.com/houserlab/ShrineSpawn
 
 # ---------------------------------------------------------------------------
-# General Settings
+# World Settings
 # ---------------------------------------------------------------------------
-settings:
-  # The Multiverse world name where shrines are located.
-  # Players will be sent to this world when using /shrine tp.
-  shrine-world: "world"
+worlds:
+  # The main overworld players will return to after respawning.
+  main-world: "world"
 
-  # Cooldown (in seconds) between uses of /shrine tp per player.
-  # Set to 0 to disable.
-  teleport-cooldown: 30
+  # The world players are sent to when they die.
+  # Set hell-enabled to true to split players between heaven and hell worlds.
+  heaven-world: "world_heaven"
+  hell-enabled: false
+  hell-world: "world_hell"
 
-  # If true, additional debug information will be logged to the console.
-  debug: false
+  # If true, ShrineSpawn will automatically create the afterlife world(s)
+  # via Multiverse-Core if they don't already exist.
+  auto-create-worlds: true
+  # World type for auto-created afterlife worlds: FLAT, NORMAL, or VOID
+  afterlife-world-type: FLAT
 
 # ---------------------------------------------------------------------------
-# Teleport Settings
+# Respawn Settings
 # ---------------------------------------------------------------------------
-teleport:
-  # Play a sound when a player is teleported to a shrine.
-  play-sound: true
-  sound: ENTITY_ENDERMAN_TELEPORT
+respawn:
+  # Where the player spawns when they return to the main world.
+  # Options: WORLD_SPAWN, BED, SHRINE
+  #   WORLD_SPAWN - the world's default spawn point
+  #   BED         - the player's last set bed/respawn anchor
+  #   SHRINE      - the shrine location set via /shrine set
+  return-location: BED
 
-  # Spawn particles at the destination when a player arrives.
-  play-particles: true
-  particle: PORTAL
+  # ---------------------------------------------------------------------------
+  # Respawn Cost (Phase 4)
+  # Items required at the shrine to resurrect a player.
+  # Cost can scale with the player's total death count.
+  # ---------------------------------------------------------------------------
+  cost:
+    enabled: true
+    # The item required for sacrifice.
+    item: DIAMOND
+    # Base amount required for the first death.
+    base-amount: 1
+    # Amount added per additional death. Set to 0 for a flat cost.
+    amount-per-death: 1
+    # Cap the maximum cost regardless of death count. Set to -1 for no cap.
+    max-amount: 10
+
+  # ---------------------------------------------------------------------------
+  # Puzzle / Parkour Bypass (Phase 5)
+  # If enabled, completing the afterlife puzzle lets a player respawn
+  # without paying the item cost.
+  # ---------------------------------------------------------------------------
+  puzzle:
+    enabled: false
+    # If true, completing the puzzle is required instead of bypassing cost.
+    # If false, puzzle is an alternative to paying the cost.
+    required: false
+
+# ---------------------------------------------------------------------------
+# Teleport Effects
+# ---------------------------------------------------------------------------
+effects:
+  # Effects played when a player dies and is sent to the afterlife.
+  on-death:
+    play-sound: true
+    sound: ENTITY_WITHER_SPAWN
+    play-particles: true
+    particle: SMOKE_LARGE
+
+  # Effects played when a player is resurrected and returned to the main world.
+  on-respawn:
+    play-sound: true
+    sound: ENTITY_ENDERMAN_TELEPORT
+    play-particles: true
+    particle: PORTAL
 
 # ---------------------------------------------------------------------------
 # Messages
@@ -36,12 +84,20 @@ messages:
   prefix: "&8[&6ShrineSpawn&8] "
   no-permission: "&cYou do not have permission to do that."
   players-only: "&cThis command can only be used by players."
-  shrine-not-set: "&cNo shrine location has been set yet. Use /shrine set to define one."
-  teleport-success: "&aYou have been teleported to the shrine!"
-  teleport-cooldown: "&cYou must wait &e{time}s &cbefore teleporting again."
+  sent-to-afterlife: "&5You have died and been sent to the afterlife..."
+  shrine-not-set: "&cNo shrine location has been set. Use /shrine set."
+  respawn-success: "&aYou have been resurrected and returned to the world!"
+  respawn-cost-info: "&6Resurrection requires &e{amount}x {item}&6. Sacrifice them at the shrine."
+  respawn-cost-insufficient: "&cNot enough items. You need &e{amount}x {item}&c to resurrect &e{player}&c."
+  respawn-cost-paid: "&aItems consumed. &e{player} &ahas been resurrected!"
   set-success: "&aLocation '{name}' has been set."
   remove-success: "&aLocation '{name}' has been removed."
   remove-not-found: "&cNo location named '{name}' was found."
   list-header: "&6--- Shrine Locations ---"
   list-empty: "&7No shrine locations have been set."
   list-entry: "&e{name} &7- {world} ({x}, {y}, {z})"
+
+# ---------------------------------------------------------------------------
+# Debug
+# ---------------------------------------------------------------------------
+debug: false
