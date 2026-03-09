@@ -19,6 +19,7 @@ public final class ShrineSpawn extends JavaPlugin {
         getLogger().info("ShrineSpawn starting...");
 
         instance = this;
+        saveDefaultConfig();
 
         getLogger().info("Hooking Multiverse-Core API");
         mv = MultiverseCoreApi.get();
