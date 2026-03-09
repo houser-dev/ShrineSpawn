@@ -1,0 +1,47 @@
+# ShrineSpawn Configuration
+# Documentation: https://github.com/houserlab/ShrineSpawn
+
+# ---------------------------------------------------------------------------
+# General Settings
+# ---------------------------------------------------------------------------
+settings:
+  # The Multiverse world name where shrines are located.
+  # Players will be sent to this world when using /shrine tp.
+  shrine-world: "world"
+
+  # Cooldown (in seconds) between uses of /shrine tp per player.
+  # Set to 0 to disable.
+  teleport-cooldown: 30
+
+  # If true, additional debug information will be logged to the console.
+  debug: false
+
+# ---------------------------------------------------------------------------
+# Teleport Settings
+# ---------------------------------------------------------------------------
+teleport:
+  # Play a sound when a player is teleported to a shrine.
+  play-sound: true
+  sound: ENTITY_ENDERMAN_TELEPORT
+
+  # Spawn particles at the destination when a player arrives.
+  play-particles: true
+  particle: PORTAL
+
+# ---------------------------------------------------------------------------
+# Messages
+# Supports standard Minecraft color codes (&a, &c, etc.)
+# ---------------------------------------------------------------------------
+messages:
+  prefix: "&8[&6ShrineSpawn&8] "
+  no-permission: "&cYou do not have permission to do that."
+  players-only: "&cThis command can only be used by players."
+  shrine-not-set: "&cNo shrine location has been set yet. Use /shrine set to define one."
+  teleport-success: "&aYou have been teleported to the shrine!"
+  teleport-cooldown: "&cYou must wait &e{time}s &cbefore teleporting again."
+  set-success: "&aLocation '{name}' has been set."
+  remove-success: "&aLocation '{name}' has been removed."
+  remove-not-found: "&cNo location named '{name}' was found."
+  list-header: "&6--- Shrine Locations ---"
+  list-empty: "&7No shrine locations have been set."
+  list-entry: "&e{name} &7- {world} ({x}, {y}, {z})"
