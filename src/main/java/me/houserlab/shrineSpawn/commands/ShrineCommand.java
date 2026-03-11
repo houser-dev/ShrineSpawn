@@ -2,7 +2,8 @@ package me.houserlab.shrineSpawn.commands;
 
 import me.houserlab.shrineSpawn.ShrineSpawn;
 import me.houserlab.shrineSpawn.menus.ShrineDialogMenu;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class shrineCommand implements CommandExecutor, TabExecutor {
+public class ShrineCommand implements CommandExecutor, TabExecutor {
 
     private final Map<String, String> helpMessages = Map.of(
             "tp", "Teleport the player to the main shrine location.",
@@ -33,37 +34,38 @@ public class shrineCommand implements CommandExecutor, TabExecutor {
         // only for players with shrinepawn.admin permission node.
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("This command can only be executed by players.");
-            plugin.getLogger().warning(sender.getName() + " Just attempted to run the command: '" + label + "' But they are not a player!");
+            sender.sendMessage(Component.text("This command can only be executed by players.", NamedTextColor.RED));
+            plugin.getLogger().warning(sender.getName() + " attempted to run '" + label + "' but is not a player.");
             return true;
         }
 
-        String playerName = player.getName();
+        if (!player.hasPermission("shrinespawn.admin")) {
+            plugin.debug(player.getName() + " attempted '" + label + "' without shrinespawn.admin permission.");
+            player.sendMessage(Component.text("You do not have permission to do that.", NamedTextColor.RED));
+            return true;
+        }
 
         if (args.length == 0) {
-            player.sendMessage("Need arguments!");
             return false;
         }
 
-
-        plugin.getLogger().info("shrine command for: " + playerName + ". Checking arguments for shrine command");
         switch (args[0].toLowerCase()) {
 
             case "help" -> {
-                plugin.getLogger().info("shrine command for: " + playerName + ". Found 'help' argument");
-                plugin.getLogger().info("shrine command for: " + playerName + ". Checking if there are arguments");
                 if (args.length == 1) {
-                    plugin.getLogger().info("shrine command for: " + playerName + ". No args found, sending basic help menu");
-                    player.sendMessage(ChatColor.GREEN + "ShrineSpawn Help Menu:");
-                    player.sendMessage(ChatColor.GREEN + "Available commands:");
-                    helpMessages.forEach((cmd, desc) -> player.sendMessage(cmd));
+                    player.sendMessage(Component.text("ShrineSpawn Help Menu:", NamedTextColor.GREEN));
+                    helpMessages.forEach((cmd, desc) ->
+                            player.sendMessage(Component.text("  /" + label + " " + cmd + " - ", NamedTextColor.GREEN)
+                                    .append(Component.text(desc, NamedTextColor.GRAY))));
                     return true;
                 } else if (args.length == 2) {
                     String cmd = args[1].toLowerCase();
-                    if (helpMessages.containsKey(cmd)) {
-                        player.sendMessage(cmd + " - " + helpMessages.get(ChatColor.DARK_GREEN + cmd));
+                    String desc = helpMessages.get(cmd);
+                    if (desc != null) {
+                        player.sendMessage(Component.text("/" + label + " " + cmd + " - ", NamedTextColor.DARK_GREEN)
+                                .append(Component.text(desc, NamedTextColor.GRAY)));
                     } else {
-                        player.sendMessage(ChatColor.RED + "No help available for command: " + cmd);
+                        player.sendMessage(Component.text("No help available for command: " + cmd, NamedTextColor.RED));
                     }
                     return true;
                 }

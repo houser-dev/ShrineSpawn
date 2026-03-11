@@ -1,12 +1,12 @@
 package me.houserlab.shrineSpawn;
 
-import me.houserlab.shrineSpawn.commands.shrineCommand;
+import me.houserlab.shrineSpawn.commands.ShrineCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 public final class ShrineSpawn extends JavaPlugin {
 
@@ -17,9 +17,16 @@ public final class ShrineSpawn extends JavaPlugin {
         return instance;
     }
 
+    public void debug(String message) {
+        if (getConfig().getBoolean("debug")) {
+            getLogger().info("[DEBUG] " + message);
+        }
+    }
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        instance = this;
+
         getLogger().info("ShrineSpawn starting...");
 
         try (InputStream in = getResource("build.properties")) {
@@ -32,16 +39,24 @@ public final class ShrineSpawn extends JavaPlugin {
             getLogger().warning("Could not read build.properties: " + e.getMessage());
         }
 
-        instance = this;
         saveDefaultConfig();
 
         getLogger().info("Hooking Multiverse-Core API");
         mv = MultiverseCoreApi.get();
+        if (mv == null) {
+            getLogger().severe("Failed to hook Multiverse-Core API! Disabling ShrineSpawn.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         getLogger().info("MultiverseCoreAPI Hooked successfully.");
 
         getLogger().info("Registering shrine command");
-        getCommand("shrine").setExecutor(new shrineCommand());
-
+        var shrineCmd = getCommand("shrine");
+        if (shrineCmd != null) {
+            shrineCmd.setExecutor(new ShrineCommand());
+        } else {
+            getLogger().severe("Could not register 'shrine' command — is it declared in plugin.yml?");
+        }
 
         getLogger().info("ShrineSpawn Finished Loading");
     }
