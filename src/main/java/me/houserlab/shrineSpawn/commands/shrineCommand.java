@@ -1,6 +1,7 @@
 package me.houserlab.shrineSpawn.commands;
 
 import me.houserlab.shrineSpawn.ShrineSpawn;
+import me.houserlab.shrineSpawn.menus.ShrineDialogMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -70,6 +71,10 @@ public class shrineCommand implements CommandExecutor, TabExecutor {
             case "tp" -> {
 
             }
+            case "menu" -> {
+                ShrineDialogMenu.openMainMenu(player);
+                return true;
+            }
         }
 
 
@@ -81,7 +86,7 @@ public class shrineCommand implements CommandExecutor, TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return Arrays.asList("help", "tp", "set", "remove", "list");
+            return Arrays.asList("help", "tp", "set", "remove", "list", "menu");
         } else if (args.length == 2 && args[0].equals("help")) {
             return Arrays.asList("tp", "set", "remove", "list");
         }
